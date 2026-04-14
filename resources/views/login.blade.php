@@ -14,6 +14,24 @@
     </style>
 </head>
 
+<div style="
+    position: absolute;
+    top: 20px;
+    left: 20px;
+">
+    <a href="{{ url('/') }}" style="
+        background: white;
+        padding: 8px 14px;
+        border-radius: 8px;
+        color: #d62a22;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    ">
+        ← Beranda
+    </a>
+</div>
+
 <body class="min-h-screen flex flex-col items-center justify-center">
 
     <!-- Judul -->

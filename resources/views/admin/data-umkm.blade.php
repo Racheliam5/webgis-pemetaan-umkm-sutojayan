@@ -78,106 +78,48 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
+                        @foreach ($umkms as $umkm)
                         <tr class="hover:bg-red-50 transition">
-                            <td class="px-4 py-3">1</td>
-                            <td class="px-4 py-3 font-medium">UMKM Maju Jaya</td>
-                            <td class="px-4 py-3">Budi Santoso</td>
-                            <td class="px-4 py-3">Kuliner</td>
-                            <td class="px-4 py-3">Sutojayan</td>
+                            <td class="px-4 py-3">{{ $loop->iteration }}</td>
+                            <td class="px-4 py-3 font-medium">{{ $umkm->nama_usaha }}</td>
+                            <td class="px-4 py-3">{{ $umkm->pemilik }}</td>
+                            <td class="px-4 py-3">{{ $umkm->bidang_usaha }}</td>
+                            <td class="px-4 py-3">{{ $umkm->desa }}</td>
                             <td class="px-4 py-3">
-                                <span class="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-full">
-                                    Tinggi
-                                </span>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex justify-center gap-2">
-                                    <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">
-                                        Edit
-                                    </button>
-                                    <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
-                                        Hapus
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        <span class="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-full">
+                            {{ $umkm->status_potensi }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex justify-center gap-2">
+                        <a href="{{ route('umkm.edit', $umkm->id) }}"
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm inline-block">
+                            Edit
+                        </a>
 
-                        <tr class="hover:bg-red-50 transition">
-                            <td class="px-4 py-3">2</td>
-                            <td class="px-4 py-3 font-medium">Batik Kreatif</td>
-                            <td class="px-4 py-3">Siti Aminah</td>
-                            <td class="px-4 py-3">Fashion</td>
-                            <td class="px-4 py-3">Bacem</td>
-                            <td class="px-4 py-3">
-                                <span class="bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full">
-                                    Sedang
-                                </span>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex justify-center gap-2">
-                                    <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">
-                                        Edit
-                                    </button>
-                                    <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
-                                        Hapus
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr class="hover:bg-red-50 transition">
-                            <td class="px-4 py-3">3</td>
-                            <td class="px-4 py-3 font-medium">Kerajinan Lokal</td>
-                            <td class="px-4 py-3">Ahmad Fauzi</td>
-                            <td class="px-4 py-3">Kerajinan</td>
-                            <td class="px-4 py-3">Kedungbunder</td>
-                            <td class="px-4 py-3">
-                                <span class="bg-purple-100 text-purple-700 text-sm px-3 py-1 rounded-full">
-                                    Berkembang
-                                </span>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex justify-center gap-2">
-                                    <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">
-                                        Edit
-                                    </button>
-                                    <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
-                                        Hapus
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr class="hover:bg-red-50 transition">
-                            <td class="px-4 py-3">4</td>
-                            <td class="px-4 py-3 font-medium">Servis Mandiri</td>
-                            <td class="px-4 py-3">Dedi Hartono</td>
-                            <td class="px-4 py-3">Jasa</td>
-                            <td class="px-4 py-3">Sutojayan</td>
-                            <td class="px-4 py-3">
-                                <span class="bg-orange-100 text-orange-700 text-sm px-3 py-1 rounded-full">
-                                    Potensial
-                                </span>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex justify-center gap-2">
-                                    <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">
-                                        Edit
-                                    </button>
-                                    <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
-                                        Hapus
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <form action="{{ route('umkm.destroy', $umkm->id) }}" method="POST"
+                      onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                            class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
+                        Hapus
+                    </button>
+                    </form>
+                </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
                 </table>
             </div>
 
             <!-- Tombol bawah -->
             <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold shadow-sm transition">
+                <a href="{{ route('umkm.create') }}"
+                class="bg-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-700 transition">
                     Tambah UMKM
-                </button>
+                </a>
 
                 <button class="bg-white border border-primary-300 text-primary-700 hover:bg-primary-50 px-6 py-3 rounded-lg font-semibold shadow-sm transition">
                     Import Excel
