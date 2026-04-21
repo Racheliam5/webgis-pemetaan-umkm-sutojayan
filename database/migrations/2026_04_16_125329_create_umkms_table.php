@@ -6,23 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
+
         Schema::create('umkms', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_umkm');
-            $table->string('pemilik')->nullable();
-            $table->text('alamat');
-            $table->string('sektor_usaha');
-            $table->text('deskripsi')->nullable();
+            $table->string('nama_usaha');
+            $table->string('pemilik');
+            $table->string('bidang_usaha');
+            $table->string('desa');
+            $table->text('alamat')->nullable();
+            $table->string('status_potensi')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
-            $table->bigInteger('omzet')->nullable();
-            $table->string('kontak')->nullable();
+            $table->string('gambar')->nullable();
             $table->timestamps();
         });
+
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('umkms');

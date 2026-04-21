@@ -7,8 +7,6 @@ use App\Http\Controllers\UmkmController;
 
 // HOME
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Optional alias /home
 Route::get('/home', [HomeController::class, 'index'])->name('home.alias');
 
 // LOGIN
@@ -29,18 +27,12 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.pr
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // DASHBOARD ADMIN
-Route::get('/admin/dashboard', function () {
-    if (!session('user_id')) {
-        return redirect('/login')->with('error', 'Silakan login terlebih dahulu');
-    }
-
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+Route::get('/admin/dashboard', [UmkmController::class, 'adminDashboard'])->name('admin.dashboard');
+Route::get('/admin/data-umkm', [UmkmController::class, 'index'])->name('admin.data.umkm');
+Route::get('/admin/peta-umkm', [UmkmController::class, 'adminMap'])->name('admin.map.umkm');
 
 // PETA UMKM
-Route::get('/peta-umkm', function () {
-    return view('map');
-})->name('map.umkm');
+Route::get('/peta-umkm', [UmkmController::class, 'map'])->name('map.umkm');
 
 // KATALOG
 Route::get('/katalog-umkm', function () {
@@ -48,9 +40,7 @@ Route::get('/katalog-umkm', function () {
 })->name('katalog.umkm');
 
 // DASHBOARD POTENSI
-Route::get('/dashboard-potensi', function () {
-    return view('dashboard-potensi');
-})->name('dashboard.potensi');
+Route::get('/dashboard-potensi', [UmkmController::class, 'dashboardPotensi'])->name('dashboard.potensi');
 
 // DATA UMKM
 Route::get('/admin/data-umkm', [UmkmController::class, 'index'])->name('admin.data.umkm');
@@ -59,3 +49,4 @@ Route::post('/admin/data-umkm', [UmkmController::class, 'store'])->name('umkm.st
 Route::get('/admin/data-umkm/{id}/edit', [UmkmController::class, 'edit'])->name('umkm.edit');
 Route::put('/admin/data-umkm/{id}', [UmkmController::class, 'update'])->name('umkm.update');
 Route::delete('/admin/data-umkm/{id}', [UmkmController::class, 'destroy'])->name('umkm.destroy');
+Route::post('/admin/data-umkm/import', [UmkmController::class, 'import'])->name('umkm.import');

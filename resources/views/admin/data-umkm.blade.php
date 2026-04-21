@@ -121,9 +121,14 @@
                     Tambah UMKM
                 </a>
 
-                <button class="bg-white border border-primary-300 text-primary-700 hover:bg-primary-50 px-6 py-3 rounded-lg font-semibold shadow-sm transition">
-                    Import Excel
-                </button>
+                <form action="{{ route('umkm.import') }}" method="POST" enctype="multipart/form-data" class="flex items-center gap-2">
+                    @csrf
+                    <input type="file" name="file" class="border border-gray-300 rounded-lg px-3 py-2" required>
+                    <button type="submit"
+                        class="bg-white border border-primary-300 text-primary-700 hover:bg-primary-50 px-6 py-3 rounded-lg font-semibold shadow-sm transition">
+                        Import Excel
+                    </button>
+                </form>
 
                 <button class="bg-white border border-primary-300 text-primary-700 hover:bg-primary-50 px-6 py-3 rounded-lg font-semibold shadow-sm transition">
                     Export Data

@@ -423,24 +423,27 @@
             <p class="subtitle">Gambaran awal kondisi UMKM di Kecamatan Sutojayan</p>
 
             <div class="cards">
-                <div class="card card-red">
-                    <div class="card-label">Jumlah UMKM</div>
-                    <div class="card-value">676</div>
-                    <div class="card-desc">Total keseluruhan UMKM terdata di Kecamatan Sutojayan</div>
-                </div>
+    <div class="card card-red">
+        <div class="card-label">Jumlah UMKM</div>
+        <div class="card-value">{{ $totalUmkm }}</div>
+        <div class="card-desc">Total keseluruhan UMKM terdata di Kecamatan Sutojayan</div>
+    </div>
 
-                <div class="card card-white">
-                    <div class="card-label">Sektor Usaha Terbanyak</div>
-                    <div class="card-value">Kuliner</div>
-                    <div class="card-desc">Sektor dominan yang paling banyak dijalankan pelaku UMKM</div>
-                </div>
+    <div class="card card-white">
+        <div class="card-label">Sektor Usaha Terbanyak</div>
+        <div class="card-value">{{ $sektorDominan }}</div>
+        <div class="card-desc">
+            Sektor dominan yang paling banyak dijalankan pelaku UMKM
+            ({{ $jumlahSektorDominan }} UMKM)
+        </div>
+    </div>
 
-                <div class="card card-white">
-                    <div class="card-label">Total Potensi Ekonomi</div>
-                    <div class="card-value">Rp 12,5 Miliar / tahun</div>
-                    <div class="card-desc">Estimasi kontribusi ekonomi UMKM terhadap wilayah</div>
-                </div>
-            </div>
+    <div class="card card-white">
+        <div class="card-label">Total Potensi Ekonomi</div>
+        <div class="card-value">Belum tersedia</div>
+        <div class="card-desc">Estimasi kontribusi ekonomi UMKM terhadap wilayah</div>
+    </div>
+</div>
         </div>
     </section>
 
@@ -454,86 +457,54 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <script>
-    const map = L.map('heroMap', {
-        zoomControl: true,
-        attributionControl: true
+    document.addEventListener('DOMContentLoaded', function () {
+        const map = L.map('heroMap').setView([-8.1690904, 112.211385], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Garis batas Kecamatan Sutojayan
+        const batasKecamatan = [
+            [-8.1560, 112.1950],
+            [-8.1485, 112.2140],
+            [-8.1490, 112.2400],
+            [-8.1560, 112.2785],
+            [-8.1730, 112.2795],
+            [-8.1955, 112.2460],
+            [-8.2010, 112.2240],
+            [-8.1880, 112.1980],
+            [-8.1730, 112.1930]
+        ];
+
+        const polygon = L.polygon(batasKecamatan, {
+            color: '#ef4444',
+            weight: 3,
+            dashArray: '10, 8',
+            fillOpacity: 0
+        }).addTo(map);
+
+        // Titik tengah (kurang lebih tengah kecamatan)
+        const centerPoint = [-8.172, 112.225];
+
+        // Marker transparan hanya untuk label
+        L.marker(centerPoint, {
+        opacity: 0
+        })
+        .addTo(map)
+        .bindTooltip("Kecamatan Sutojayan", {
+            permanent: true,
+            direction: "center",
+            className: "label-kecamatan"
+        });
+
+        map.fitBounds(polygon.getBounds(), { padding: [20, 20] });
+
+        setTimeout(() => {
+            map.invalidaeSize();
+        }, 300);
     });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Leaflet | © OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Polygon pendekatan visual supaya mirip tampilan peta kecamatan Sutojayan
-    // Nanti bisa diganti GeoJSON batas resmi kalau sudah ada
-    const sutojayanCoords = [
-        [-8.130, 112.145],
-        [-8.118, 112.170],
-        [-8.112, 112.205],
-        [-8.116, 112.235],
-        [-8.126, 112.263],
-        [-8.147, 112.286],
-        [-8.170, 112.300],
-        [-8.191, 112.295],
-        [-8.208, 112.279],
-        [-8.220, 112.258],
-        [-8.233, 112.236],
-        [-8.244, 112.210],
-        [-8.241, 112.182],
-        [-8.234, 112.160],
-        [-8.220, 112.141],
-        [-8.198, 112.132],
-        [-8.176, 112.131],
-        [-8.153, 112.136]
-    ];
-
-    const batasSutojayan = L.polygon(sutojayanCoords, {
-        color: '#e53935',
-        weight: 3,
-        opacity: 1,
-        dashArray: '6, 8',
-        fillColor: '#7cb342',
-        fillOpacity: 0.18
-    }).addTo(map);
-
-    map.fitBounds(batasSutojayan.getBounds(), {
-        padding: [20, 20]
-    });
-
-    // Marker/label kecamatan
-    const pusatSutojayan = [-8.1724563, 112.2122597];
-
-    const marker = L.marker(pusatSutojayan).addTo(map);
-
-    marker.bindPopup('Kecamatan Sutojayan').openPopup();
-
-    // Label permanen seperti di contoh
-    const labelIcon = L.divIcon({
-        className: 'custom-label',
-        html: `
-            <div style="
-                background:#fff;
-                padding:8px 14px;
-                border-radius:10px;
-                box-shadow:0 2px 10px rgba(0,0,0,0.18);
-                border:1px solid #ddd;
-                font-size:14px;
-                font-weight:600;
-                color:#333;
-                white-space:nowrap;
-            ">
-                Kec. Sutojayan
-            </div>
-        `,
-        iconSize: [140, 40],
-        iconAnchor: [70, 20]
-    });
-
-    L.marker([-8.150, 112.210], {
-        icon: labelIcon,
-        interactive: false
-    }).addTo(map);
 </script>
 
 <style>

@@ -3,19 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Umkm;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $totalUmkm = 676;
+        $totalUmkm = Umkm::count();
 
-        // Data awal statis untuk landing page
-        // Nanti bisa diganti query database
-        $sektorTerbanyak = 'Kuliner';
-        $totalPotensiEkonomi = 'Rp 12,5 Miliar / tahun';
+        $sektorCounts = Umkm::whereNotNull('bidang_usaha')
+            ->selectRaw('bidang_usaha, COUNT(*) as total')
+            ->groupBy('bidang_usaha')
+            ->pluck('total', 'bidang_usaha');
 
-        return view('home', compact('totalUmkm', 'sektorTerbanyak', 'totalPotensiEkonomi'));
+        $sektorDominan = $sektorCounts->sortDesc()->keys()->first() ?? '-';
+        $jumlahSektorDominan = $sektorCounts->sortDesc()->first() ?? 0;
+
+        return view('home', compact(
+            'totalUmkm',
+            'sektorDominan',
+            'jumlahSektorDominan'
+        ));
     }
 }

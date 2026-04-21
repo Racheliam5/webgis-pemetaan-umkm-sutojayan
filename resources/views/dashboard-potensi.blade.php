@@ -59,7 +59,7 @@
             <div class="mb-6">
                 <h2 class="text-3xl font-bold text-primary-700">Visualisasi Potensi Ekonomi UMKM</h2>
                 <p class="text-gray-600 mt-2">
-                    Halaman ini menampilkan grafik dan diagram untuk membantu analisis jumlah UMKM per desa dan sektor usaha dominan di Kecamatan Sutojayan.
+                    Halaman ini menampilkan grafik dan diagram untuk membantu analisis jumlah UMKM per Kelurahan/Desa dan sektor usaha dominan di Kecamatan Sutojayan.
                 </p>
             </div>
 
@@ -67,7 +67,7 @@
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
                 <div class="bg-gray-50 border border-red-100 rounded-2xl p-5 shadow-sm">
                     <h3 class="text-lg font-bold text-primary-700 mb-4">
-                        Grafik Jumlah UMKM per Desa
+                        Grafik Jumlah UMKM per Kelurahan/Desa
                     </h3>
                     <div class="h-80">
                         <canvas id="barChart"></canvas>
@@ -88,22 +88,26 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                 <div class="bg-primary-50 border border-primary-100 rounded-2xl p-5">
                     <p class="text-sm uppercase tracking-wide text-primary-600">Total UMKM</p>
-                    <h4 class="text-3xl font-bold mt-2 text-gray-800">676</h4>
+                    <h4 class="text-3xl font-bold mt-2 text-gray-800">{{ $totalUmkm }}</h4>
                     <p class="text-sm text-gray-600 mt-2">Jumlah keseluruhan UMKM terdata.</p>
                 </div>
 
-                <div class="bg-primary-50 border border-primary-100 rounded-2xl p-5">
-                    <p class="text-sm uppercase tracking-wide text-primary-600">Desa Dominan</p>
-                    <h4 class="text-3xl font-bold mt-2 text-gray-800">Sutojayan</h4>
-                    <p class="text-sm text-gray-600 mt-2">Wilayah dengan jumlah UMKM terbanyak.</p>
-                </div>
-
-                <div class="bg-primary-50 border border-primary-100 rounded-2xl p-5">
-                    <p class="text-sm uppercase tracking-wide text-primary-600">Sektor Dominan</p>
-                    <h4 class="text-3xl font-bold mt-2 text-gray-800">Kuliner</h4>
-                    <p class="text-sm text-gray-600 mt-2">Sektor usaha paling banyak dijalankan.</p>
-                </div>
+            <div class="bg-primary-50 border border-primary-100 rounded-2xl p-5">
+                <p class="text-sm uppercase tracking-wide text-primary-600">Kelurahan/Desa Dominan</p>
+                <h4 class="text-3xl font-bold mt-2 text-gray-800">{{ $wilayahDominan }}</h4>
+                <p class="text-sm text-gray-600 mt-2">
+                        Wilayah dengan jumlah UMKM terbanyak ({{ $jumlahDominan }} UMKM).
+                </p>
             </div>
+
+            <div class="bg-primary-50 border border-primary-100 rounded-2xl p-5">
+                <p class="text-sm uppercase tracking-wide text-primary-600">Sektor Dominan</p>
+                <h4 class="text-3xl font-bold mt-2 text-gray-800">{{ $sektorDominan }}</h4>
+                <p class="text-sm text-gray-600 mt-2">
+                        Sektor usaha paling banyak dijalankan ({{ $jumlahSektorDominan }} UMKM).
+                </p>
+            </div>
+        </div>
 
             <!-- Tombol Export -->
             <div class="flex flex-wrap justify-end gap-4">
@@ -121,65 +125,66 @@
         </div>
     </main>
 
-    <script>
-        const barCtx = document.getElementById('barChart');
+<script>
+    const barCtx = document.getElementById('barChart');
 
-        new Chart(barCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Sutojayan', 'Bacem', 'Kedungbunder', 'Kalipang', 'Pandanarum'],
-                datasets: [{
-                    label: 'Jumlah UMKM',
-                    data: [180, 140, 125, 110, 121],
-                    backgroundColor: [
-                        '#dc2626',
-                        '#ef4444',
-                        '#f87171',
-                        '#b91c1c',
-                        '#991b1b'
-                    ],
-                    borderRadius: 8
-                }]
+    new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: [
+                'Kembangarum',
+                'Sutojayan',
+                'Kalipang',
+                'Bacem',
+                'Kedungbunder',
+                'Jingglong',
+                'Sukorejo',
+                'Sumberjo',
+                'Jegu',
+                'Pandanarum',
+                'Kaulon'
+            ],
+            datasets: [{
+                label: 'Jumlah UMKM',
+                data: [60, 20, 33, 56, 5, 4, 5, 6, 127, 256],
+                backgroundColor: [
+                    '#f87171', // Kembangarum
+                    '#ef4444', // Sutojayan
+                    '#dc2626', // Kalipang
+                    '#f43f5e', // Bacem
+                    '#fecaca', // Kedungbunder
+                    '#fca5a5', // Jingglong
+                    '#fee2e2', // Sukorejo
+                    '#fda4af', // Sumberjo
+                    '#b91c1c', // Jegu
+                    '#7f1d1d',  // Pandanarum (paling gelap = dominan)
+                    '#991b1b' // Kaulon
+                ],
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
+            scales: {
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
                     }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                y: {
+                    beginAtZero: true
                 }
             }
-        });
-
-        const pieCtx = document.getElementById('pieChart');
-
-        new Chart(pieCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Kuliner', 'Fashion', 'Kerajinan', 'Jasa', 'Perdagangan'],
-                datasets: [{
-                    data: [240, 120, 95, 110, 111],
-                    backgroundColor: [
-                        '#dc2626',
-                        '#ef4444',
-                        '#f87171',
-                        '#b91c1c',
-                        '#7f1d1d'
-                    ],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    </script>
+        }
+    });
+</script>
 </body>
 </html>

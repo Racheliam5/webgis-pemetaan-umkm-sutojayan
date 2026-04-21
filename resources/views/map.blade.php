@@ -39,6 +39,7 @@
         #map {
             height: 100%;
             width: 100%;
+            min-height: 500px;
         }
 
         .leaflet-popup-content-wrapper {
@@ -48,6 +49,7 @@
         .leaflet-popup-content {
             margin: 14px 16px;
         }
+
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -70,9 +72,11 @@
                         class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500">
                         <option value="semua">Semua Kategori</option>
                         <option value="Kuliner">Kuliner</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Kerajinan">Kerajinan</option>
+                        <option value="Perdagangan">Perdagangan</option>
+                        <option value="Industri/Produksi">Industri/Produksi</option>
                         <option value="Jasa">Jasa</option>
+                        <option value="Kecantikan">Kecantikan</option>
+                        <option value="Lainnya">Lainnya</option>
                     </select>
                 </div>
 
@@ -84,20 +88,30 @@
                         class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500">
                         <option value="semua">Semua Wilayah</option>
                         <option value="Sutojayan">Sutojayan</option>
-                        <option value="Bacem">Bacem</option>
+                        <option value="Kalipang">Kalipang</option>
+                        <option value="Kembangarum">Kembangarum</option>
                         <option value="Kedungbunder">Kedungbunder</option>
+                        <option value="Jingglong">Jingglong</option>
+                        <option value="Jegu">Jegu</option>
+                        <option value="Bacem">Bacem</option>
+                        <option value="Pandanarum">Pandanarum</option>
+                        <option value="Kaulon">Kaulon</option>
+                        <option value="Sukorejo">Sukorejo</option>
+                        <option value="Sumberjo">Sumberjo</option>
                     </select>
                 </div>
 
                 <div>
+                <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Status Data
+                        Status Potensi
                     </label>
                     <select id="filterStatus"
                         class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                        <option value="semua">Semua Status</option>
-                        <option value="Aktif">Aktif</option>
-                        <option value="Belum Verifikasi">Belum Verifikasi</option>
+                        <option value="semua">Semua Potensi</option>
+                        <option value="tinggi">Tinggi</option>
+                        <option value="sedang">Sedang</option>
+                        <option value="rendah">Rendah</option>
                     </select>
                 </div>
 
@@ -153,114 +167,100 @@
         </main>
     </div>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        const sutojayanCoords = [-8.0985, 112.1680];
+<script>
+    const umkmData = @json($umkms);
+</script>
 
-        const map = L.map('map').setView(sutojayanCoords, 13);
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const map = L.map('map').setView([-8.1690904, 112.211385], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        const umkmData = [
-            {
-                nama: "UMKM Maju Jaya",
-                kategori: "Kuliner",
-                wilayah: "Sutojayan",
-                status: "Aktif",
-                deskripsi: "Usaha makanan tradisional khas daerah.",
-                pemilik: "Budi Santoso",
-                lat: -8.0985,
-                lng: 112.1680
-            },
-            {
-                nama: "Batik Kreatif",
-                kategori: "Fashion",
-                wilayah: "Bacem",
-                status: "Aktif",
-                deskripsi: "Usaha batik lokal dengan motif khas.",
-                pemilik: "Siti Aminah",
-                lat: -8.1020,
-                lng: 112.1725
-            },
-            {
-                nama: "Kerajinan Lokal",
-                kategori: "Kerajinan",
-                wilayah: "Kedungbunder",
-                status: "Belum Verifikasi",
-                deskripsi: "Kerajinan tangan berbahan lokal.",
-                pemilik: "Ahmad Fauzi",
-                lat: -8.0948,
-                lng: 112.1642
-            },
-            {
-                nama: "Servis Mandiri",
-                kategori: "Jasa",
-                wilayah: "Sutojayan",
-                status: "Aktif",
-                deskripsi: "Layanan servis elektronik rumah tangga.",
-                pemilik: "Dedi Hartono",
-                lat: -8.1060,
-                lng: 112.1708
-            }
-        ];
+        const umkmData = @json($umkms);
 
-        let markerLayer = L.layerGroup().addTo(map);
+        umkmData.forEach(item => {
+            if (!item.latitude || !item.longitude) return;
 
-        function renderMarkers(data) {
-            markerLayer.clearLayers();
+            let color = 'red';
+            const status = (item.status_potensi || '').toLowerCase();
 
-            if (data.length === 0) {
-                alert('Data tidak ditemukan sesuai filter.');
-                return;
-            }
+            if (status === 'tinggi') color = 'green';
+            else if (status === 'sedang') color = 'orange';
 
-            data.forEach(item => {
-                const marker = L.marker([item.lat, item.lng]);
+            const icon = L.icon({
+                iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
 
-                marker.bindPopup(`
-                    <div class="min-w-[220px]">
-                        <h3 style="font-size:16px; font-weight:700; color:#b91c1c; margin-bottom:8px;">
-                            ${item.nama}
-                        </h3>
-                        <p style="margin:4px 0;"><strong>Kategori:</strong> ${item.kategori}</p>
-                        <p style="margin:4px 0;"><strong>Wilayah:</strong> ${item.wilayah}</p>
-                        <p style="margin:4px 0;"><strong>Status:</strong> ${item.status}</p>
-                        <p style="margin:8px 0 4px 0;"><strong>Pemilik:</strong> ${item.pemilik}</p>
-                        <p style="margin:4px 0; color:#4b5563;">${item.deskripsi}</p>
-                    </div>
+            L.marker([parseFloat(item.latitude), parseFloat(item.longitude)], { icon })
+                .addTo(map)
+                .bindPopup(`
+                    <strong>${item.nama_usaha}</strong><br>
+                    Pemilik: ${item.pemilik ?? '-'}<br>
+                    Bidang: ${item.bidang_usaha ?? '-'}<br>
+                    Desa/Kelurahan: ${item.desa ?? '-'}<br>
+                    Potensi: ${item.status_potensi ?? '-'}
                 `);
-
-                markerLayer.addLayer(marker);
-            });
-        }
-
-        renderMarkers(umkmData);
-
-        document.getElementById('btnFilter').addEventListener('click', function () {
-            const kategori = document.getElementById('filterKategori').value;
-            const wilayah = document.getElementById('filterWilayah').value;
-            const status = document.getElementById('filterStatus').value;
-
-            const filtered = umkmData.filter(item => {
-                const matchKategori = kategori === 'semua' || item.kategori === kategori;
-                const matchWilayah = wilayah === 'semua' || item.wilayah === wilayah;
-                const matchStatus = status === 'semua' || item.status === status;
-
-                return matchKategori && matchWilayah && matchStatus;
-            });
-
-            renderMarkers(filtered);
         });
+    });
+</script>
 
-        document.getElementById('btnReset').addEventListener('click', function () {
-            document.getElementById('filterKategori').value = 'semua';
-            document.getElementById('filterWilayah').value = 'semua';
-            document.getElementById('filterStatus').value = 'semua';
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const sutojayanCenter = [-8.1690904, 112.211385];
 
-            renderMarkers(umkmData);
-        });
-    </script>
+    const map = L.map('map').setView(sutojayanCenter, 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const wilayahSutojayan = [
+        { lat: -8.1728046, lng: 112.2311303, jenis: "Desa" },
+        { lat: -8.1788382, lng: 112.2091866, jenis: "Kelurahan" },
+        { lat: -8.17702, lng: 112.2170105, jenis: "Kelurahan" },
+        { lat: -8.1943179, lng: 112.2348146, jenis: "Desa" },
+        { lat: -8.1814695, lng: 112.2451082, jenis: "Desa" },
+        { lat: -8.1726077, lng: 112.2337362, jenis: "Kelurahan" },
+        { lat: -8.1691309, lng: 112.2123175, jenis: "Kelurahan" },
+        { lat: -8.1588429, lng: 112.2122, jenis: "Kelurahan" },
+        { lat: -8.1679415, lng: 112.2086582, jenis: "Kelurahan" },
+        { lat: -8.1581743, lng: 112.2784052, jenis: "Desa" },
+        { lat: -8.1489265, lng: 112.2371909, jenis: "Kelurahan" }
+    ];
+
+    const batasKecamatan = [
+        [-8.1560, 112.1950],
+        [-8.1485, 112.2140],
+        [-8.1490, 112.2400],
+        [-8.1560, 112.2785],
+        [-8.1730, 112.2795],
+        [-8.1955, 112.2460],
+        [-8.2010, 112.2240],
+        [-8.1880, 112.1980],
+        [-8.1730, 112.1930]
+    ];
+
+    // Garis batas kecamatan
+    L.polygon(batasKecamatan, {
+        color: '#ef4444',
+        weight: 3,
+        dashArray: '10, 8',
+        fillOpacity: 0
+    }).addTo(map);
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 300);
+});
+</script>
 </body>
 </html>
